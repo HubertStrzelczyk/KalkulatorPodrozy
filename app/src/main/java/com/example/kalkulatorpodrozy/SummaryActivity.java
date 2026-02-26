@@ -1,31 +1,39 @@
 package com.example.kalkulatorpodrozy;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SummaryActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
 
-        double d = getIntent().getDoubleExtra(MainActivity.KLUCZ_DYSTANS, 0);
-        double s = getIntent().getDoubleExtra(MainActivity.KLUCZ_SPALANIE, 0);
-        String p = getIntent().getStringExtra(MainActivity.KLUCZ_PALIWO);
+        TextView etykietaPodsumowania = findViewById(R.id.etykietaPodsumowania);
+        Button przyciskPotwierdz = findViewById(R.id.przyciskPotwierdz);
+        Button przyciskAnuluj = findViewById(R.id.przyciskAnuluj);
 
-        double cena = p.equals("LPG") ? 3.15 : 6.55;
-        double suma = (d / 100) * s * cena;
+        Intent intencja = getIntent();
+        String dystans = intencja.getStringExtra(MainActivity.EXTRA_DYSTANS);
+        String spalanie = intencja.getStringExtra(MainActivity.EXTRA_SPALANIE);
+        boolean czyPremium = intencja.getBooleanExtra(MainActivity.EXTRA_CZY_PREMIUM, false);
 
-        TextView tv = findViewById(R.id.tekstWynik);
-        tv.setText(String.format("Dystans: %.1f km\nPaliwo: %s\nKoszt: %.2f PLN", d, p, suma));
+        String tekstPodsumowania = "Dystans: " + dystans + " km\n" +
+                "Spalanie: " + spalanie + " l/100km\n" +
+                "Paliwo Premium: " + (czyPremium ? "Tak" : "Nie");
 
-        findViewById(R.id.btnOk).setOnClickListener(v -> {
+        etykietaPodsumowania.setText(tekstPodsumowania);
+
+        przyciskPotwierdz.setOnClickListener(v -> {
             setResult(RESULT_OK);
             finish();
         });
 
-        findViewById(R.id.btnAnuluj).setOnClickListener(v -> {
+        przyciskAnuluj.setOnClickListener(v -> {
             setResult(RESULT_CANCELED);
             finish();
         });

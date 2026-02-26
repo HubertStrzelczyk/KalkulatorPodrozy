@@ -1,10 +1,27 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/xml/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:padding="16dp">
 
-    <TextView android:id="@+id/tekstWynik" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="20sp" />
-    <Button android:id="@+id/btnOk" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Potwierdź" android:layout_marginTop="20dp" />
-    <Button android:id="@+id/btnAnuluj" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Anuluj" />
+    <TextView
+        android:id="@+id/etykietaPodsumowania"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/przyciskPotwierdz"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="✅ Potwierdź" />
+
+    <Button
+        android:id="@+id/przyciskAnuluj"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="❌ Anuluj" />
+
 </LinearLayout>

@@ -3,8 +3,8 @@ package com.example.kalkulatorpodrozy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
@@ -12,13 +12,28 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String KLUCZ_DYSTANS = "DYSTANS";
-    public static final String KLUCZ_SPALANIE = "SPALANIE";
-    public static final String KLUCZ_PALIWO = "PALIWO";
 
-    private EditText poleDystans, poleSpalanie;
-    private Spinner wyborPaliwa;
-    private TextView tekstStatusu;
+    public static final String EXTRA_DYSTANS = "EXTRA_DYSTANS";
+    public static final String EXTRA_SPALANIE = "EXTRA_SPALANIE";
+    public static final String EXTRA_CZY_PREMIUM = "EXTRA_CZY_PREMIUM";
+
+    private EditText poleDystans;
+    private EditText poleSpalanie;
+    private CheckBox opcjaPaliwoPremium;
+    private TextView etykietaStatusu;
+
+    private final ActivityResultLauncher<Intent> uruchamiaczPodsumowania = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            wynik -> {
+                if (wynik.getResultCode() == RESULT_OK) {
+                    etykietaStatusu.setText("Status: Zatwierdzono");
+                    Toast.makeText(this, "Dane zapisane", Toast.LENGTH_SHORT).show();
+                } else if (wynik.getResultCode() == RESULT_CANCELED) {
+                    etykietaStatusu.setText("Status: Anulowano");
+                    Toast.makeText(this, "Odrzucono zmiany", Toast.LENGTH_SHORT).show();
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,35 +42,34 @@ public class MainActivity extends AppCompatActivity {
 
         poleDystans = findViewById(R.id.poleDystans);
         poleSpalanie = findViewById(R.id.poleSpalanie);
-        wyborPaliwa = findViewById(R.id.wyborPaliwa);
-        tekstStatusu = findViewById(R.id.tekstStatusu);
+        opcjaPaliwoPremium = findViewById(R.id.opcjaPaliwoPremium);
+        etykietaStatusu = findViewById(R.id.etykietaStatusu);
+        Button przyciskDalej = findViewById(R.id.przyciskDalej);
 
-        findViewById(R.id.przyciskDalej).setOnClickListener(v -> {
-            String dStr = poleDystans.getText().toString();
-            String sStr = poleSpalanie.getText().toString();
-
-            if (dStr.isEmpty() || sStr.isEmpty()) {
-                Toast.makeText(this, "Wypełnij pola!", Toast.LENGTH_SHORT).show();
-                return;
+        przyciskDalej.setOnClickListener(v -> {
+            if (walidujDane()) {
+                wyslijDane();
             }
-
-            Intent intencja = new Intent(this, SummaryActivity.class);
-            intencja.putExtra(KLUCZ_DYSTANS, Double.parseDouble(dStr));
-            intencja.putExtra(KLUCZ_SPALANIE, Double.parseDouble(sStr));
-            intencja.putExtra(KLUCZ_PALIWO, wyborPaliwa.getSelectedItem().toString());
-
-            rejestrator.launch(intencja);
         });
     }
 
-    private final ActivityResultLauncher<Intent> rejestrator = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK) {
-                    tekstStatusu.setText("Status: Obliczenia zaakceptowane ✅");
-                } else {
-                    tekstStatusu.setText("Status: Obliczenia anulowane ❌");
-                }
-            }
-    );
+    private boolean walidujDane() {
+        if (poleDystans.getText().toString().isEmpty()) {
+            poleDystans.setError("Wpisz dystans");
+            return false;
+        }
+        if (poleSpalanie.getText().toString().isEmpty()) {
+            poleSpalanie.setError("Wpisz spalanie");
+            return false;
+        }
+        return true;
+    }
+
+    private void wyslijDane() {
+        Intent intencja = new Intent(this, SummaryActivity.class);
+        intencja.putExtra(EXTRA_DYSTANS, poleDystans.getText().toString());
+        intencja.putExtra(EXTRA_SPALANIE, poleSpalanie.getText().toString());
+        intencja.putExtra(EXTRA_CZY_PREMIUM, opcjaPaliwoPremium.isChecked());
+        uruchamiaczPodsumowania.launch(intencja);
+    }
 }
