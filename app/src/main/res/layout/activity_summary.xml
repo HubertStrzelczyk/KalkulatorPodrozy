@@ -1,0 +1,10 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/xml/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView android:id="@+id/tekstWynik" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="20sp" />
+    <Button android:id="@+id/btnOk" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Potwierdź" android:layout_marginTop="20dp" />
+    <Button android:id="@+id/btnAnuluj" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Anuluj" />
+</LinearLayout>
