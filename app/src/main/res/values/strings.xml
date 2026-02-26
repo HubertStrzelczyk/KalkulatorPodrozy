@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">KalkulatorPodrozy</string>
+    <string-array name="typy_paliwa">
+        <item>Benzyna</item>
+        <item>Diesel</item>
+        <item>LPG</item>
+    </string-array>
 </resources>
